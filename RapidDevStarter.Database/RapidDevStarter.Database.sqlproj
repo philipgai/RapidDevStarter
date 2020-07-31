@@ -86,5 +86,9 @@
     <None Include="Security\Server\LoginMode.sql" />
     <None Include="Security\Server\Logins\Securables\Index.sql" />
     <None Include="RapidDevStarter.Database.Local.publish.xml" />
+    <None Include="Security\Users\AlterUserAuthorization.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="RapidDevStarter.Database.refactorlog" />
   </ItemGroup>
 </Project>

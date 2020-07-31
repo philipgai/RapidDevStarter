@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[User]
 (
-	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[UserKey] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	[UserName] NVARCHAR(32) NOT NULL,
     [Email] NVARCHAR(64) NOT NULL,
     [FirstName] NVARCHAR(64) NOT NULL, 
@@ -10,8 +10,8 @@
     -- Audit Data
 	[CreatedDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     [UpdatedDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-    [RowStart] datetime2 (2) GENERATED ALWAYS AS ROW START,
-    [RowEnd] datetime2 (2) GENERATED ALWAYS AS ROW END,
+    [RowStart] datetime2 (2) GENERATED ALWAYS AS ROW START HIDDEN,
+    [RowEnd] datetime2 (2) GENERATED ALWAYS AS ROW END HIDDEN,
     PERIOD FOR SYSTEM_TIME ([RowStart], [RowEnd]) 
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [History].[dbo_User]));
