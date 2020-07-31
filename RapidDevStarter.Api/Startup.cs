@@ -58,6 +58,16 @@ namespace RapidDevStarter.Api
                     options.EnableRetryOnFailure();
                 });
             });
+
+            services.AddCors(corsOptions =>
+            {
+                corsOptions.AddPolicy("RapidDevStarter.Web", options =>
+                {
+                    options
+                    .WithOrigins(Configuration.GetSection("Clients")["RapidDevStarterWebUrl"])
+                    .WithHeaders(HeaderNames.AccessControlAllowOrigin, "*");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +89,7 @@ namespace RapidDevStarter.Api
                 endpointRouteBuilder.MapControllers();
                 endpointRouteBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
                 endpointRouteBuilder.EnableDependencyInjection();
-                endpointRouteBuilder.MapODataRoute("OData", "OData", GetEdmModel());
+                endpointRouteBuilder.MapODataRoute("ODataRoute", null, GetEdmModel());
             });
 
             app.UseSwagger();
