@@ -28,12 +28,5 @@ namespace RapidDevStarter.Api.Controllers
         {
             return _rapidDevStarterDbContext.User.ProjectTo<UserDto>(_mapper.ConfigurationProvider);
         }
-
-        [ODataRoute("({userKey})")]
-        [EnableQuery]
-        public IQueryable<UserDto> Get(int userKey)
-        {
-            return _rapidDevStarterDbContext.User.Where(user => user.UserKey == userKey).ProjectTo<UserDto>(_mapper.ConfigurationProvider);
-        }
     }
 }
