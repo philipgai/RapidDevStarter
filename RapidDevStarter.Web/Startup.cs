@@ -27,7 +27,7 @@ namespace RapidDevStarter.Web
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "RapidDevStarter.Web/dist";
+                configuration.RootPath = "rapid-dev-starter/dist";
             });
         }
 
@@ -57,7 +57,7 @@ namespace RapidDevStarter.Web
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "RapidDevStarter.Web";
+                spa.Options.SourcePath = "rapid-dev-starter";
 
                 if (env.IsDevelopment())
                 {

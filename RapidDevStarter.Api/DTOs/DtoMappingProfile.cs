@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNet.OData;
 using RapidDevStarter.Entities.RapidDevStarterEntities;
 
 namespace RapidDevStarter.Api.DTOs
@@ -7,7 +8,8 @@ namespace RapidDevStarter.Api.DTOs
     {
         public DtoMappingProfile()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<Delta<UserDto>, Delta<User>>();
         }
     }
 }

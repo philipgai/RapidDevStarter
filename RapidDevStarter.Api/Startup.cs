@@ -20,6 +20,8 @@ namespace RapidDevStarter.Api
 {
     public class Startup
     {
+        private readonly string CorsPolicyName = "RapidDevStarterApiCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -61,11 +63,12 @@ namespace RapidDevStarter.Api
 
             services.AddCors(corsOptions =>
             {
-                corsOptions.AddPolicy("RapidDevStarter.Web", options =>
+                corsOptions.AddPolicy(CorsPolicyName, options =>
                 {
                     options
                     .WithOrigins(Configuration.GetSection("Clients")["RapidDevStarterWebUrl"])
-                    .WithHeaders(HeaderNames.AccessControlAllowOrigin, "*");
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
                 });
             });
         }
@@ -81,6 +84,7 @@ namespace RapidDevStarter.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(CorsPolicyName);
 
             app.UseAuthorization();
 
@@ -102,7 +106,7 @@ namespace RapidDevStarter.Api
         private static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<UserDto>("User").EntityType.HasKey(user => user.UserKey);
+            builder.EntitySet<UserDto>("Users").EntityType.HasKey(user => user.UserKey);//.Name = "User";
             return builder.GetEdmModel();
         }
     }

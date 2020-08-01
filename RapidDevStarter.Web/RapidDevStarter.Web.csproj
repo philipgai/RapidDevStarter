@@ -18,22 +18,13 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="RapidDevStarter.Web\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="RapidDevStarter.Web\**" />
+    <EmbeddedResource Remove="RapidDevStarter.Web\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="RapidDevStarter.Web\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="RapidDevStarter.Web\angular.json" />
-    <None Include="RapidDevStarter.Web\e2e\tsconfig.e2e.json" />
-    <None Include="RapidDevStarter.Web\package-lock.json" />
-    <None Include="RapidDevStarter.Web\package.json" />
-    <None Include="RapidDevStarter.Web\src\tsconfig.app.json" />
-    <None Include="RapidDevStarter.Web\src\tsconfig.server.json" />
-    <None Include="RapidDevStarter.Web\src\tsconfig.spec.json" />
-    <None Include="RapidDevStarter.Web\src\tslint.json" />
-    <None Include="RapidDevStarter.Web\tsconfig.json" />
-    <None Include="RapidDevStarter.Web\tslint.json" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
