@@ -3,6 +3,7 @@ using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,6 @@ using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 using RapidDevStarter.Api.DTOs;
 using RapidDevStarter.Entities.RapidDevStarterEntities;
-using System;
 using System.Linq;
 
 namespace RapidDevStarter.Api
@@ -84,6 +84,25 @@ namespace RapidDevStarter.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Redirect for swagger OData queries
+            app.Use(async (context, next) =>
+            {
+                var url = context.Request.Path.Value;
+                var queryParams = context.Request.Query;
+
+                if (url.Contains("{key}") && queryParams.ContainsKey("key"))
+                {
+                    var key = queryParams["key"].ToString();
+                    var newPath = url.Replace("{key}", key);
+                    context.Request.Query = new QueryCollection(queryParams.Where(p => p.Key != "key").ToDictionary(p => p.Key, p => p.Value));
+                    context.Response.Redirect($"{newPath}{context.Request.QueryString}");
+                    return;   // short circuit
+                }
+
+                await next();
+            });
+
             app.UseCors(CorsPolicyName);
 
             app.UseAuthorization();
