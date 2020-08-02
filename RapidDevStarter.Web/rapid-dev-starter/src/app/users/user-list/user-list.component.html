@@ -1,5 +1,12 @@
-<dx-data-grid [dataSource]="userDataSource" [showBorders]="true">    
-    <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true"></dxo-pager>
-    <dxo-editing mode="row" [allowUpdating]="true" [allowDeleting]="true" [allowAdding]="true"></dxo-editing>
+<dx-data-grid [dataSource]="userDataSource" [showBorders]="true">
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true"></dxo-pager>
+  <dxo-editing mode="row" [allowUpdating]="true" [allowDeleting]="true" [allowAdding]="true"></dxo-editing>
+
+  <dxi-column dataField="UserName"></dxi-column>
+  <dxi-column dataField="FirstName"></dxi-column>
+  <dxi-column dataField="LastName"></dxi-column>
+  <dxi-column dataField="ContactInfo.Email"></dxi-column>
+  <dxi-column dataField="ContactInfo.Phone"></dxi-column>
+  <dxi-column dataField="ContactInfo.State"></dxi-column>
 </dx-data-grid>

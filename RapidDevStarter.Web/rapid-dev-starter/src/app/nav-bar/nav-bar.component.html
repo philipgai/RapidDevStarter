@@ -1,0 +1,8 @@
+<dx-toolbar>
+  <dxi-item location="before" widget="dxMenu" [options]="userMenuOptions"></dxi-item>
+  <dxi-item location="center" widget="dxButton" locateInMenu="never">
+    <ng-container *dxTemplate>
+      <div class='toolbar-label' [routerLink]="['/']"><b>RapidDevStarter Web App</b></div>
+    </ng-container>
+  </dxi-item>
+</dx-toolbar>

@@ -9,7 +9,7 @@ namespace RapidDevStarter.Api.DTOs
         public DtoMappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<Delta<UserDto>, Delta<User>>();
+            CreateMap<ContactInfo, ContactInfoDto>().ReverseMap();
         }
     }
 }

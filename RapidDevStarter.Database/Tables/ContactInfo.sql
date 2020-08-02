@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[ContactInfo]
+(
+	[ContactInfoUserKey] INT NOT NULL PRIMARY KEY FOREIGN KEY REFERENCES [User]([UserKey]),
+    [Email] NVARCHAR(64) NULL,
+    [Phone] NVARCHAR(64) NULL,
+    [City] NVARCHAR(64) NULL,
+    [State] NVARCHAR(64) NULL,
+    [Country] NVARCHAR(64) NULL,
+    [PostalCode] NVARCHAR(64) NULL,
+
+    -- Audit Data
+    [CreatedBy] NVARCHAR(128) NOT NULL DEFAULT SUSER_NAME(),
+    [UpdatedBy] NVARCHAR(128) NOT NULL DEFAULT SUSER_NAME(),
+	[CreatedDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
+    [UpdatedDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    [RowStart] datetime2 (2) GENERATED ALWAYS AS ROW START HIDDEN,
+    [RowEnd] datetime2 (2) GENERATED ALWAYS AS ROW END HIDDEN, 
+    PERIOD FOR SYSTEM_TIME ([RowStart], [RowEnd]) 
+)
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [History].[dbo_ContactInfo]));

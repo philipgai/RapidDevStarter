@@ -13,6 +13,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 using RapidDevStarter.Api.DTOs;
+using RapidDevStarter.Entities.DbContexts;
 using RapidDevStarter.Entities.RapidDevStarterEntities;
 using System.Linq;
 
@@ -53,7 +54,7 @@ namespace RapidDevStarter.Api
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddDbContext<RapidDevStarterDbContext>(options =>
+            services.AddDbContext<RapidDevStarterDbContextWrapper>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("RapidDevStarterDB"), options =>
                 {
@@ -125,7 +126,8 @@ namespace RapidDevStarter.Api
         private static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<UserDto>("Users").EntityType.HasKey(user => user.UserKey);//.Name = "User";
+            builder.EntitySet<UserDto>("Users").EntityType.HasKey(dto => dto.UserKey);
+            builder.EntitySet<ContactInfoDto>("ContactInfos").EntityType.HasKey(dto => dto.ContactInfoUserKey);
             return builder.GetEdmModel();
         }
     }
