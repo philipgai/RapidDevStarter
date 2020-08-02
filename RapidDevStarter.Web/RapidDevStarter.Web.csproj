@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-    <SpaRoot>RapidDevStarter.Web\</SpaRoot>
+    <SpaRoot>rapid-dev-starter\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
     <!-- Set this to true if you enable server-side prerendering -->
@@ -18,12 +18,12 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="RapidDevStarter.Web\**" />
+    <Compile Remove="rapid-dev-starter\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="RapidDevStarter.Web\**" />
-    <EmbeddedResource Remove="RapidDevStarter.Web\**" />
+    <Content Remove="rapid-dev-starter\**" />
+    <EmbeddedResource Remove="rapid-dev-starter\**" />
     <None Remove="$(SpaRoot)**" />
-    <None Remove="RapidDevStarter.Web\**" />
+    <None Remove="rapid-dev-starter\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
