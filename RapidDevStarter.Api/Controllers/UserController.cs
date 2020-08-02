@@ -9,13 +9,18 @@ using RapidDevStarter.Api.DTOs;
 using RapidDevStarter.Entities.DbContexts;
 using RapidDevStarter.Entities.RapidDevStarterEntities;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RapidDevStarter.Api.Controllers
 {
+    // TODO - Move controller methods to Core, remove reference to *.Entities
     [ODataRoutePrefix("Users")]
+    // Get OData endpoints to show up in Swagger
+    // HttpMethod("Route") is added to endpoints for Swagger
+    // [FromQuery] and [FromBody] added for Swagger
     [ApiExplorerSettings(IgnoreApi = false)]
     public class UserController : ODataController
     {
@@ -28,13 +33,13 @@ namespace RapidDevStarter.Api.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // TODO - Cannot sort by navigation props
         [ODataRoute]
         [EnableQuery]
         [HttpGet("Users")]
-        public IQueryable<UserDto> GetUsers([FromQuery(Name = "$count")] bool count, [FromQuery(Name = "$skip")] int skip, [FromQuery(Name = "$top")] int top, [FromQuery(Name = "$filter")] string filter, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select, [FromQuery(Name = "$orderby")] string orderBy, [FromQuery(Name = "$apply")] string apply, [FromQuery(Name = "$format")] string format, [FromQuery(Name = "$skiptoken")] string skipToken, [FromQuery(Name = "$deltatoken")] string deltaToken)
+        public async Task<IEnumerable<UserDto>> GetUsers([FromQuery(Name = "$count")] bool count, [FromQuery(Name = "$skip")] int skip, [FromQuery(Name = "$top")] int top, [FromQuery(Name = "$filter")] string filter, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select, [FromQuery(Name = "$orderby")] string orderBy, [FromQuery(Name = "$apply")] string apply, [FromQuery(Name = "$format")] string format, [FromQuery(Name = "$skiptoken")] string skipToken, [FromQuery(Name = "$deltatoken")] string deltaToken)
         {
-            return _rapidDevStarterDbContext.User.ProjectTo<UserDto>(_mapper.ConfigurationProvider);
+            // Use ToListAsync to allow orderby with navigation properties
+            return await _rapidDevStarterDbContext.User.ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         [ODataRoute("({key})")]
@@ -77,15 +82,15 @@ namespace RapidDevStarter.Api.Controllers
 
             _rapidDevStarterDbContext.Entry(userEntity).CurrentValues.SetValues(updatedUser);
 
-            if (userEntity.ContactInfo == null && updatedUser.ContactInfo != null)
+            if (userEntity.ContactInfo == null && updatedUser.ContactInfo != null) // Create new ContactInfo
             {
                 userEntity.ContactInfo = _mapper.Map<ContactInfo>(updatedUser.ContactInfo);
             }
-            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo != null)
+            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo != null) // Update current ContactInfo
             {
                 _rapidDevStarterDbContext.Entry(userEntity.ContactInfo).CurrentValues.SetValues(updatedUser.ContactInfo);
             }
-            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo == null)
+            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo == null) // Delete ContactInfo
             {
                 userEntity.ContactInfo = null;
             }

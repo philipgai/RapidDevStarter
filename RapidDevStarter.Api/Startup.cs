@@ -14,7 +14,6 @@ using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 using RapidDevStarter.Api.DTOs;
 using RapidDevStarter.Entities.DbContexts;
-using RapidDevStarter.Entities.RapidDevStarterEntities;
 using System.Linq;
 
 namespace RapidDevStarter.Api
@@ -30,13 +29,13 @@ namespace RapidDevStarter.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOData();
 
             services.AddControllers(options =>
             {
+                // outputFormatter and inputFormatter added so Swagger still works with ODataControllers
                 foreach (var outputFormatter in options.OutputFormatters.OfType<OutputFormatter>().Where(x => x.SupportedMediaTypes.Count == 0))
                 {
                     outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
@@ -74,7 +73,6 @@ namespace RapidDevStarter.Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -86,7 +84,7 @@ namespace RapidDevStarter.Api
 
             app.UseRouting();
 
-            // Redirect for swagger OData queries
+            // Redirect for Swagger OData queries
             app.Use(async (context, next) =>
             {
                 var url = context.Request.Path.Value;
@@ -98,7 +96,7 @@ namespace RapidDevStarter.Api
                     var newPath = url.Replace("{key}", key);
                     context.Request.Query = new QueryCollection(queryParams.Where(p => p.Key != "key").ToDictionary(p => p.Key, p => p.Value));
                     context.Response.Redirect($"{newPath}{context.Request.QueryString}");
-                    return;   // short circuit
+                    return;
                 }
 
                 await next();
