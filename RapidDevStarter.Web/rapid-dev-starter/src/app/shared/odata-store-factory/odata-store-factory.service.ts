@@ -11,7 +11,8 @@ export interface IODataStoreCreateOptions {
   url: string,
   key: string,
   getItems: () => any[],
-  complexObjects: IComplexObject[]
+  complexObjects: IComplexObject[],
+  beforeSend?: (options: { url?: string; async?: boolean; method?: string; timeout?: number; params?: any; payload?: any; }) => any
 }
 
 @Injectable({
@@ -41,6 +42,7 @@ export class ODataStoreFactoryService {
           const updated = { ...original, ...options.payload }
           options.payload = updated;
         }
+        if (createOptions.beforeSend) createOptions.beforeSend(options);
       }
     })
   };

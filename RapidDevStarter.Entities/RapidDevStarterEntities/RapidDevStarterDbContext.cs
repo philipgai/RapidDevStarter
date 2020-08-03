@@ -16,6 +16,7 @@ namespace RapidDevStarter.Entities.RapidDevStarterEntities
         }
 
         public virtual DbSet<ContactInfo> ContactInfo { get; set; }
+        public virtual DbSet<DboContactInfo> DboContactInfo { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -66,13 +67,50 @@ namespace RapidDevStarter.Entities.RapidDevStarterEntities
                     .WithOne(p => p.ContactInfo)
                     .HasForeignKey<ContactInfo>(d => d.ContactInfoUserKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ContactIn__Conta__5FB337D6");
+                    .HasConstraintName("FK__ContactIn__Conta__6754599E");
+            });
+
+            modelBuilder.Entity<DboContactInfo>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("dbo_ContactInfo", "History");
+
+                entity.HasIndex(e => new { e.RowEnd, e.RowStart })
+                    .HasName("ix_dbo_ContactInfo")
+                    .IsClustered();
+
+                entity.Property(e => e.City).HasMaxLength(64);
+
+                entity.Property(e => e.Country).HasMaxLength(64);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                entity.Property(e => e.Email).HasMaxLength(64);
+
+                entity.Property(e => e.Phone).HasMaxLength(64);
+
+                entity.Property(e => e.PostalCode).HasMaxLength(64);
+
+                entity.Property(e => e.RowEnd).HasColumnType("datetime2(2)");
+
+                entity.Property(e => e.RowStart).HasColumnType("datetime2(2)");
+
+                entity.Property(e => e.State).HasMaxLength(64);
+
+                entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(128);
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.UserKey)
-                    .HasName("PK__tmp_ms_x__296ADCF17D6C2C37");
+                    .HasName("PK__tmp_ms_x__296ADCF1B20651FF");
+
+                entity.Property(e => e.BirthDate).HasColumnType("date");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -97,10 +135,6 @@ namespace RapidDevStarter.Entities.RapidDevStarterEntities
                     .HasDefaultValueSql("(suser_name())");
 
                 entity.Property(e => e.UpdatedDate).HasDefaultValueSql("(getutcdate())");
-
-                entity.Property(e => e.UserName)
-                    .IsRequired()
-                    .HasMaxLength(32);
             });
 
             OnModelCreatingPartial(modelBuilder);

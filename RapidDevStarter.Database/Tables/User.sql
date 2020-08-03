@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[User]
 (
 	[UserKey] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	[UserName] NVARCHAR(32) NOT NULL,
     [FirstName] NVARCHAR(64) NOT NULL, 
     [MiddleName] NVARCHAR(64) NULL, 
     [LastName] NVARCHAR(64) NOT NULL,
+    [BirthDate] DATE NULL,
 
     -- Audit Data
     [CreatedBy] NVARCHAR(128) NOT NULL DEFAULT SUSER_NAME(),
