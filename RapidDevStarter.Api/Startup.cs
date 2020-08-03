@@ -1,19 +1,13 @@
-using AutoMapper;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OData.Edm;
-using Microsoft.OpenApi.Models;
-using RapidDevStarter.Api.DTOs;
-using RapidDevStarter.Entities.DbContexts;
+using RapidDevStarter.Api.StartupConfigs;
+using RapidDevStarter.Infrastructure.Config;
 using System.Linq;
 
 namespace RapidDevStarter.Api
@@ -31,6 +25,9 @@ namespace RapidDevStarter.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCoreServices();
+            services.AddInfraServices(Configuration);
+
             services.AddOData();
 
             services.AddControllers(options =>
@@ -46,20 +43,10 @@ namespace RapidDevStarter.Api
                     inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
                 }
             }).AddNewtonsoftJson();
-            services.AddAutoMapper(typeof(Startup));
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RapidDevStarter API v1", Version = "v1" });
-            });
-            services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddDbContext<RapidDevStarterDbContextWrapper>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("RapidDevStarterDB"), options =>
-                {
-                    options.EnableRetryOnFailure();
-                });
-            });
+            AutoMapperStartup.AddAutoMapper(services);
+
+            SwaggerStartup.AddSwagger(services);
 
             services.AddCors(corsOptions =>
             {
@@ -82,25 +69,9 @@ namespace RapidDevStarter.Api
 
             app.UseHttpsRedirection();
 
+            SwaggerStartup.UseSwagger(app);
+
             app.UseRouting();
-
-            // Redirect for Swagger OData queries
-            app.Use(async (context, next) =>
-            {
-                var url = context.Request.Path.Value;
-                var queryParams = context.Request.Query;
-
-                if (url.Contains("{key}") && queryParams.ContainsKey("key"))
-                {
-                    var key = queryParams["key"].ToString();
-                    var newPath = url.Replace("{key}", key);
-                    context.Request.Query = new QueryCollection(queryParams.Where(p => p.Key != "key").ToDictionary(p => p.Key, p => p.Value));
-                    context.Response.Redirect($"{newPath}{context.Request.QueryString}");
-                    return;
-                }
-
-                await next();
-            });
 
             app.UseCors(CorsPolicyName);
 
@@ -109,24 +80,8 @@ namespace RapidDevStarter.Api
             app.UseEndpoints(endpointRouteBuilder =>
             {
                 endpointRouteBuilder.MapControllers();
-                endpointRouteBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
-                endpointRouteBuilder.EnableDependencyInjection();
-                endpointRouteBuilder.MapODataRoute("ODataRoute", null, GetEdmModel());
+                ODataStartup.UseOData(endpointRouteBuilder);
             });
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RapidDevStarter API v1");
-            });
-        }
-
-        private static IEdmModel GetEdmModel()
-        {
-            var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<UserDto>("Users").EntityType.HasKey(dto => dto.UserKey);
-            builder.EntitySet<ContactInfoDto>("ContactInfos").EntityType.HasKey(dto => dto.ContactInfoUserKey);
-            return builder.GetEdmModel();
         }
     }
 }

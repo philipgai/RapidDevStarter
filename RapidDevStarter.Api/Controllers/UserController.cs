@@ -6,113 +6,88 @@ using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RapidDevStarter.Api.DTOs;
-using RapidDevStarter.Entities.DbContexts;
-using RapidDevStarter.Entities.RapidDevStarterEntities;
+using RapidDevStarter.Core.Models;
+using RapidDevStarter.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RapidDevStarter.Api.Controllers
 {
-    // TODO - Move controller methods to Core, remove reference to *.Entities
     [ODataRoutePrefix("Users")]
-    // Get OData endpoints to show up in Swagger
-    // HttpMethod("Route") is added to endpoints for Swagger
-    // [FromQuery] and [FromBody] added for Swagger
-    [ApiExplorerSettings(IgnoreApi = false)]
+    [ApiExplorerSettings(IgnoreApi = false)] // Needed for OData in Swagger
     public class UserController : ODataController
     {
-        private readonly RapidDevStarterDbContextWrapper _rapidDevStarterDbContext;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public UserController(RapidDevStarterDbContextWrapper rapidDevStarterDbContext, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
-            _rapidDevStarterDbContext = rapidDevStarterDbContext ?? throw new ArgumentNullException(nameof(rapidDevStarterDbContext));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [ODataRoute]
         [EnableQuery]
-        [HttpGet("Users")]
-        public async Task<IEnumerable<UserDto>> GetUsers([FromQuery(Name = "$count")] bool count, [FromQuery(Name = "$skip")] int skip, [FromQuery(Name = "$top")] int top, [FromQuery(Name = "$filter")] string filter, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select, [FromQuery(Name = "$orderby")] string orderBy, [FromQuery(Name = "$apply")] string apply, [FromQuery(Name = "$format")] string format, [FromQuery(Name = "$skiptoken")] string skipToken, [FromQuery(Name = "$deltatoken")] string deltaToken)
+        [HttpGet("[controller]s")] // Needed for OData in Swagger
+        // [FromQuery] and [FromBody] params needed for Swagger
+        public async Task<IEnumerable<UserDto>> Get([FromQuery(Name = "$count")] bool count, [FromQuery(Name = "$skip")] int skip, [FromQuery(Name = "$top")] int top, [FromQuery(Name = "$filter")] string filter, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select, [FromQuery(Name = "$orderby")] string orderBy, [FromQuery(Name = "$apply")] string apply, [FromQuery(Name = "$format")] string format, [FromQuery(Name = "$skiptoken")] string skipToken, [FromQuery(Name = "$deltatoken")] string deltaToken)
         {
             // Use ToListAsync to allow orderby with navigation properties
-            return await _rapidDevStarterDbContext.User.ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();
+            return await _userService.Get().ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         [ODataRoute("({key})")]
         [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.Expand | AllowedQueryOptions.Select)]
-        [HttpGet("Users({key})")]
-        public SingleResult<UserDto> Get([Required][FromODataUri] int key, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select)
+        [HttpGet("[controller]s({key})")]
+        public SingleResult<UserDto> GetByKey([Required][FromODataUri] int key, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select)
         {
-            var result = _rapidDevStarterDbContext.User.Where(user => user.UserKey == key).ProjectTo<UserDto>(_mapper.ConfigurationProvider);
+            var userModel = _userService.Get(key);
+            var result = userModel.ProjectTo<UserDto>(_mapper.ConfigurationProvider);
             return SingleResult.Create(result);
         }
 
         [ODataRoute]
-        [HttpPost("Users")]
-        public async Task<IActionResult> Post([FromBody] UserDto userDto)
-        {
-            var userEntity = _mapper.Map<User>(userDto);
-            _rapidDevStarterDbContext.User.Add(userEntity);
-            await _rapidDevStarterDbContext.SaveChangesAsync();
-            var result = _mapper.Map<UserDto>(userEntity);
-            return Created(result);
-        }
-
-        [ODataRoute("({key})")]
-        [HttpPut("Users({key})")]
-        public async Task<IActionResult> Put([Required][FromODataUri] int key, [FromBody] UserDto updatedUser)
+        [HttpPost("[controller]s")]
+        public async Task<IActionResult> Post([Required][FromBody] UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var userEntity = await _rapidDevStarterDbContext.User
-                .Include(user => user.ContactInfo)
-                .SingleOrDefaultAsync(user => user.UserKey == key);
-
-            if (userEntity == null)
-            {
-                return NotFound();
-            }
-
-            _rapidDevStarterDbContext.Entry(userEntity).CurrentValues.SetValues(updatedUser);
-
-            if (userEntity.ContactInfo == null && updatedUser.ContactInfo != null) // Create new ContactInfo
-            {
-                userEntity.ContactInfo = _mapper.Map<ContactInfo>(updatedUser.ContactInfo);
-            }
-            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo != null) // Update current ContactInfo
-            {
-                _rapidDevStarterDbContext.Entry(userEntity.ContactInfo).CurrentValues.SetValues(updatedUser.ContactInfo);
-            }
-            else if (userEntity.ContactInfo != null && updatedUser.ContactInfo == null) // Delete ContactInfo
-            {
-                userEntity.ContactInfo = null;
-            }
-
-            await _rapidDevStarterDbContext.SaveChangesAsync();
-            var result = _mapper.Map<UserDto>(userEntity);
-            return Updated(result);
+            var userModel = _mapper.Map<UserModel>(userDto);
+            var resultModel = await _userService.CreateAsync(userModel);
+            var resultDto = _mapper.Map<UserDto>(resultModel);
+            return Created(resultDto);
         }
 
         [ODataRoute("({key})")]
-        [HttpDelete("Users({key})")]
+        [HttpPut("[controller]s({key})")]
+        public async Task<IActionResult> Put([Required][FromODataUri] int key, [Required][FromBody] UserDto updatedUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var updatedUserModel = _mapper.Map<UserModel>(updatedUser);
+            var resultModel = await _userService.UpdateAsync(key, updatedUserModel);
+            var resultDto = _mapper.Map<UserDto>(resultModel);
+            return Updated(resultDto);
+        }
+
+        [ODataRoute("({key})")]
+        [HttpDelete("[controller]s({key})")]
         public async Task<IActionResult> Delete([Required][FromODataUri] int key)
         {
-            var userEntity = await _rapidDevStarterDbContext.User
-                .Include(user => user.ContactInfo)
-                .SingleOrDefaultAsync(user => user.UserKey == key);
-            if (userEntity == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
-            _rapidDevStarterDbContext.User.Remove(userEntity);
-            await _rapidDevStarterDbContext.SaveChangesAsync();
+
+            await _userService.DeleteAsync(key);
             return NoContent();
         }
     }

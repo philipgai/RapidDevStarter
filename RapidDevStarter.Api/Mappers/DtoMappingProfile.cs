@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNet.OData;
+using RapidDevStarter.Api.DTOs;
+using RapidDevStarter.Core.Models;
 using RapidDevStarter.Entities.RapidDevStarterEntities;
 
-namespace RapidDevStarter.Api.DTOs
+namespace RapidDevStarter.Api.Mappers
 {
     public class DtoMappingProfile : Profile
     {
@@ -10,6 +11,9 @@ namespace RapidDevStarter.Api.DTOs
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<ContactInfo, ContactInfoDto>().ReverseMap();
+
+            CreateMap<UserDto, UserModel>().ReverseMap();
+            CreateMap<ContactInfoDto, ContactInfoModel>().ReverseMap();
         }
     }
 }

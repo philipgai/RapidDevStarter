@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RapidDevStarter.Entities\RapidDevStarter.Entities.csproj" />
+    <ProjectReference Include="..\RapidDevStarter.Infrastructure\RapidDevStarter.Infrastructure.csproj" />
   </ItemGroup>
 
 

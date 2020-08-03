@@ -4,7 +4,7 @@ using RapidDevStarter.Entities.RapidDevStarterEntities;
 namespace RapidDevStarter.Entities.DbContexts
 {
     /// <summary>
-    /// Use wrapper to make necessary overrides without changing the automatically generated DbContext
+    /// Use RapidDevStarterDbContextWrapper to make necessary overrides without changing the automatically generated RapidDevStarterDbContext.
     /// </summary>
     public class RapidDevStarterDbContextWrapper : RapidDevStarterDbContext
     {
