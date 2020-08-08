@@ -11,4 +11,5 @@ Post-Deployment Script Template
 */
 
 :r ..\Security\Server\LoginMode.sql
-:r ..\Security\Server\Logins\Securables\Index.sql
+:r ..\Security\Server\Logins\Index.sql
+:r ..\Security\Users\Index.sql

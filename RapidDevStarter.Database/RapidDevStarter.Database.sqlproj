@@ -67,7 +67,6 @@
     <Folder Include="Security\Schemas" />
     <Folder Include="Security\Server" />
     <Folder Include="Security\Server\Logins" />
-    <Folder Include="Security\Server\Logins\Securables" />
     <Folder Include="Deployment\OneTimeScripts" />
   </ItemGroup>
   <ItemGroup>
@@ -78,20 +77,25 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\User.sql" />
-    <Build Include="Security\Users\RapidDevStarterApi.sql" />
+    <None Include="Security\Users\RapidDevStarterApi.sql" />
     <Build Include="Security\Schemas\History.sql" />
-    <Build Include="Security\Server\Logins\RapidDevStarterApi.sql" />
-    <None Include="Security\Server\Logins\Securables\RapidDevStarterApi.sql" />
+    <None Include="Security\Server\Logins\RapidDevStarterApi.sql" />
     <Build Include="Tables\ContactInfo.sql" />
+    <None Include="Security\Server\Logins\Index.sql" />
+    <None Include="Security\Users\Index.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Security\Server\LoginMode.sql" />
-    <None Include="Security\Server\Logins\Securables\Index.sql" />
     <None Include="RapidDevStarter.Database.Local.publish.xml" />
-    <None Include="Security\Users\AlterUserAuthorization.sql" />
     <None Include="Deployment\OneTimeScripts\DeleteUsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="RapidDevStarter.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="RapidDevStarterApiLoginPwd">
+      <DefaultValue>0kgr@j0dJj*3</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
 </Project>
