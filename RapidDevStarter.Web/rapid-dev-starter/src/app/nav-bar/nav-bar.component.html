@@ -1,8 +1,23 @@
 <dx-toolbar class="bg-primary p-2">
-  <dxi-item location="before" widget="dxMenu" [options]="userMenuOptions"></dxi-item>
-  <dxi-item location="center" widget="dxButton" locateInMenu="never">
+  <dxi-item location="before" widget="dxButton" locateInMenu="never">
     <ng-container *dxTemplate>
-      <div class='toolbar-label' [routerLink]="['/']"><b>RapidDevStarter Web App</b></div>
+      <div class='text-white' [routerLink]="['/']">
+        <fa-icon [icon]="faRocket" size="s"></fa-icon>
+        <b> RapidDevStarter</b>
+      </div>
+    </ng-container>
+  </dxi-item>
+  <dxi-item location="after" widget="dxButton">
+    <ng-container *dxTemplate>
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Manage
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="users" [routerLink]="['/users']">Users</a>
+        </div>
+      </div>
     </ng-container>
   </dxi-item>
 </dx-toolbar>

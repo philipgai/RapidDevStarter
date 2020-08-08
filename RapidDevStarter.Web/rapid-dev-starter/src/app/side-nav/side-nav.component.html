@@ -1,0 +1,9 @@
+<dx-button icon="menu" (onClick)="isDrawerOpen = !isDrawerOpen"></dx-button>
+<dx-drawer openedStateMode="shrink" position="left" revealMode="expand" template="drawerTemplate"
+    [(opened)]="isDrawerOpen" [height]="100" [closeOnOutsideClick]="true">
+    <div *dxTemplate="let data of 'drawerTemplate'" style="width: 200px">
+        <dx-list class="panel-list" [dataSource]="sideMenuData" [hoverStateEnabled]="false" [activeStateEnabled]="true"
+            [focusStateEnabled]="false">
+        </dx-list>
+    </div>
+</dx-drawer>
