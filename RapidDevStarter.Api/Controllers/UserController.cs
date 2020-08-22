@@ -17,6 +17,7 @@ namespace RapidDevStarter.Api.Controllers
 {
     [ODataRoutePrefix("Users")]
     [ApiExplorerSettings(IgnoreApi = false)] // Needed for OData in Swagger
+    [Route("[controller]s")]
     public class UserController : ODataController
     {
         private readonly IUserService _userService;
@@ -30,17 +31,18 @@ namespace RapidDevStarter.Api.Controllers
 
         [ODataRoute]
         [EnableQuery]
-        [HttpGet("[controller]s")] // Needed for OData in Swagger
+        [HttpGet] // Needed for OData in Swagger
         // [FromQuery] and [FromBody] params needed for Swagger
         public async Task<IEnumerable<UserDto>> Get([FromQuery(Name = "$count")] bool count, [FromQuery(Name = "$skip")] int skip, [FromQuery(Name = "$top")] int top, [FromQuery(Name = "$filter")] string filter, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select, [FromQuery(Name = "$orderby")] string orderBy, [FromQuery(Name = "$apply")] string apply, [FromQuery(Name = "$format")] string format, [FromQuery(Name = "$skiptoken")] string skipToken, [FromQuery(Name = "$deltatoken")] string deltaToken)
         {
             // Use ToListAsync to allow orderby with navigation properties
+            // Unfortunately this queries for everything in the table
             return await _userService.Get().ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         [ODataRoute("({key})")]
         [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.Expand | AllowedQueryOptions.Select)]
-        [HttpGet("[controller]s({key})")]
+        [HttpGet("({key})")]
         public SingleResult<UserDto> GetByKey([Required][FromODataUri] int key, [FromQuery(Name = "$expand")] string expand, [FromQuery(Name = "$select")] string select)
         {
             var userModel = _userService.Get(key);
@@ -49,7 +51,7 @@ namespace RapidDevStarter.Api.Controllers
         }
 
         [ODataRoute]
-        [HttpPost("[controller]s")]
+        [HttpPost]
         public async Task<IActionResult> Post([Required][FromBody] UserDto userDto)
         {
             if (!ModelState.IsValid)
@@ -64,7 +66,7 @@ namespace RapidDevStarter.Api.Controllers
         }
 
         [ODataRoute("({key})")]
-        [HttpPut("[controller]s({key})")]
+        [HttpPut("({key})")]
         public async Task<IActionResult> Put([Required][FromODataUri] int key, [Required][FromBody] UserDto updatedUser)
         {
             if (!ModelState.IsValid)
@@ -79,7 +81,7 @@ namespace RapidDevStarter.Api.Controllers
         }
 
         [ODataRoute("({key})")]
-        [HttpDelete("[controller]s({key})")]
+        [HttpDelete("({key})")]
         public async Task<IActionResult> Delete([Required][FromODataUri] int key)
         {
             if (!ModelState.IsValid)

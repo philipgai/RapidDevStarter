@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-nav',
@@ -7,13 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SideNavComponent implements OnInit {
 
-  public isDrawerOpen = true;
+  public isDrawerOpen = false;
 
   public sideMenuData = [
-    { id: 1, text: 'Accounts' }
+    { id: 1, text: 'Users', icon: 'user', onClick: () => this._router.navigate(['/users']) }
   ]
 
-  constructor() { }
+  constructor(private readonly _router: Router) { }
 
   ngOnInit(): void {
   }

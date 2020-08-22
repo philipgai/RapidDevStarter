@@ -3,4 +3,17 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.font-size-1x {
+    font-size: 1em;
+}
+.font-size-1-25x {
+    font-size: 1.25em;
+}
+.font-size-1-5x {
+    font-size: 1.5em;
+}
+.font-size-2x {
+    font-size: 2em;
+}
+
 @import "./scss/custom";

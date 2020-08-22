@@ -1,0 +1,16 @@
+@import '../../styles.scss';
+
+.side-nav {
+    position: absolute;
+    top: 53px;
+    left: 1px;
+}
+
+.drawer-opened {
+    width: 250px;
+}
+
+.dx-drawer-opened {
+    @extend .shadow;
+    @extend .drawer-opened;
+}
