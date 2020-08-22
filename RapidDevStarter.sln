@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidDevStarter.Api", "Rapi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidDevStarter.Entities", "RapidDevStarter.Entities\RapidDevStarter.Entities.csproj", "{F227CAFD-D848-4F22-862E-DF02B88E8BB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidDevStarter.Infrastructure", "RapidDevStarter.Infrastructure\RapidDevStarter.Infrastructure.csproj", "{5B3996AE-9E10-4CDA-9BA2-532B9AB2CC5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidDevStarter.Infrastructure", "RapidDevStarter.Infrastructure\RapidDevStarter.Infrastructure.csproj", "{5B3996AE-9E10-4CDA-9BA2-532B9AB2CC5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F11AF65D-8894-4078-88E8-5E2CB7AF490B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
